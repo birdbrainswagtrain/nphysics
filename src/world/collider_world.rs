@@ -1,4 +1,4 @@
-use std::collections::{hash_map, HashMap};
+use std::collections::{hash_map, HashMap, HashSet};
 
 use na::RealField;
 use ncollide::world::{CollisionWorld, GeometricQueryType, CollisionGroups, CollisionObject};
@@ -20,7 +20,7 @@ use crate::math::{Isometry, Point};
 pub struct ColliderWorld<N: RealField> {
     cworld: CollisionWorld<N, ColliderData<N>>,
     collider_lists: HashMap<BodyHandle, (ColliderHandle, ColliderHandle)>, // (head, tail)
-    colliders_w_parent: Vec<ColliderHandle>,
+    colliders_w_parent: HashSet<ColliderHandle>,
     default_material: MaterialHandle<N>
 }
 
@@ -37,7 +37,7 @@ impl<N: RealField> ColliderWorld<N> {
         ColliderWorld {
             cworld,
             collider_lists: HashMap::new(),
-            colliders_w_parent: Vec::new(),
+            colliders_w_parent: HashSet::new(),
             default_material: MaterialHandle::new(BasicMaterial::default())
         }
     }
@@ -119,7 +119,7 @@ impl<N: RealField> ColliderWorld<N> {
         let result = co.handle();
 
         if !parent.is_ground() {
-            self.colliders_w_parent.push(result);
+            let _ = self.colliders_w_parent.insert(result);
         }
 
         // Update the colliders list.
