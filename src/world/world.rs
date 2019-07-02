@@ -224,6 +224,10 @@ impl<N: RealField> World<N> {
         &self.gravity
     }
 
+    pub fn sync_colliders(&mut self) {
+        self.cworld.sync_colliders(&self.bodies);
+    }
+
     /// Execute one time step of the physics simulation.
     pub fn step(&mut self) {
         self.counters.step_started();
